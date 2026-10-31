@@ -1,0 +1,323 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Pablo Ballester Asesio</title>
+  <meta name="description" content="Telecommunication engineer. FPGAs, electronics and the AI that runs on them.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,600;1,6..72,400&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+  <script type="importmap">
+    {
+      "imports": {
+        "three": "https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.module.js",
+        "roughjs": "https://cdn.jsdelivr.net/npm/roughjs@4.6.6/bundled/rough.esm.js"
+      }
+    }
+  </script>
+  <script type="module" src="board.js"></script>
+  <script type="module" src="figures.js"></script>
+  <script type="module" src="figures3d.js"></script>
+  <script type="module" src="filter.js"></script>
+</head>
+<body>
+  <div class="page">
+
+    <!-- ============ Portada: la placa se despieza con el scroll ============ -->
+    <section class="hero" id="top">
+      <div class="hero-sticky">
+        <div class="hero-text">
+          <h1>Pablo Ballester Asesio</h1>
+          <p class="intro">Telecommunication engineer. I like knowing what happens all the way down: from the logic inside an FPGA to the neural network running on it.</p>
+          <p class="hand now">Now: MSc thesis on RL trading · building a drone</p>
+          <p class="small">Double MSc in Telecom + Deep Learning at UAM, Madrid.<br>Open to work in Madrid, Zürich, Paris or London.</p>
+          <nav class="toc" aria-label="Contents">
+            <a href="#work" data-topic="hardware"><span>1.1</span>Hardware &amp; FPGA</a>
+            <a href="#work" data-topic="vision"><span>1.2</span>Vision</a>
+            <a href="#work" data-topic="biometrics"><span>1.3</span>Biometrics</a>
+            <a href="#work" data-topic="security"><span>1.4</span>Security</a>
+            <a href="#work" data-topic="networks"><span>1.5</span>Networks &amp; telecom</a>
+            <a href="#work" data-topic="markets"><span>1.6</span>Markets</a>
+            <a href="#log"><span>2</span>Work log</a>
+            <a href="#me"><span>3</span>About &amp; contact</a>
+          </nav>
+        </div>
+
+        <div class="rig" id="rig">
+          <canvas id="board" aria-label="Line drawing of a Zybo Z7 FPGA board that comes apart as you scroll"></canvas>
+          <svg class="leaders" id="leaders" aria-hidden="true"></svg>
+          <div class="labels" id="labels" aria-hidden="true"></div>
+          <p class="hand hint" id="hint">Scroll to take it apart ↓</p>
+          <table class="title-block">
+            <tr><th>Fig. 0</th><td colspan="3">Zybo Z7-20, exploded. Where the audio project lived.</td></tr>
+            <tr><th>Drawn</th><td>P. Ballester</td><th>Date</th><td>10.2026</td></tr>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ 1 · Work: todos los trabajos, con filtro por temas ============ -->
+    <section class="chapter" id="work">
+      <h2><span class="num">1</span>Work</h2>
+
+      <div class="filters" role="toolbar" aria-label="Filter projects by topic">
+        <button type="button" data-filter="all" aria-pressed="true">All<sup></sup></button>
+        <button type="button" data-filter="hardware" aria-pressed="false">Hardware &amp; FPGA<sup></sup></button>
+        <button type="button" data-filter="vision" aria-pressed="false">Vision<sup></sup></button>
+        <button type="button" data-filter="biometrics" aria-pressed="false">Biometrics<sup></sup></button>
+        <button type="button" data-filter="security" aria-pressed="false">Security<sup></sup></button>
+        <button type="button" data-filter="networks" aria-pressed="false">Networks &amp; telecom<sup></sup></button>
+        <button type="button" data-filter="markets" aria-pressed="false">Markets<sup></sup></button>
+      </div>
+
+      <article class="entry" data-topics="hardware">
+        <p class="margin">Oct 2026<span>MSc Telecom</span></p>
+        <div class="body">
+          <h3>Real-time audio recorder on an FPGA</h3>
+          <p>For the MSc I built a recorder and player that runs in real time on a Zybo Z7-20. The audio path lives in programmable logic, written in VHDL with Vivado and Simulink. The ARM core on the same chip configures the audio codec in C. Buttons and switches on the board set the volume and switch between recording and playback.</p>
+          <p class="tools">VHDL · Vivado · Vitis · Simulink · C</p>
+        </div>
+        <figure class="sketch"><svg data-fig="audio" viewBox="0 0 320 210"></svg><figcaption>Fig. 1 — Audio path: mic → codec → logic → memory → out</figcaption></figure>
+      </article>
+      <article class="entry" data-topics="hardware vision">
+        <p class="margin">Feb – May 2026<span>MSc Deep Learning</span></p>
+        <div class="body">
+          <h3>Neural networks on an FPGA</h3>
+          <p>On an Ultra96 board I took networks from a training script all the way to the FPGA's DPU with Vitis AI. First an MNIST classifier trained in TensorFlow 2, quantized to 8-bit integers and compiled. Then a ResNet-50 for ImageNet, from both TensorFlow and PyTorch. The course behind it covered why this works: accelerator architectures, systolic arrays, pruning, quantization and memory bottlenecks.</p>
+          <p class="tools">Vitis AI · DPU · TensorFlow · PyTorch · Zynq UltraScale+</p>
+        </div>
+        <figure class="sketch"><div class="fig3d" data-fig3d="systolic" role="img" aria-label="3D drawing of a systolic array with data flowing through it"><canvas></canvas><span class="tag tl">activations →</span><span class="tag br">↓ partial sums</span></div><figcaption>Fig. 2 — Systolic array: the weights stay put, the data flows through</figcaption></figure>
+      </article>
+      <article class="entry" data-topics="hardware vision">
+        <p class="margin">Sep 2026 – now<span>personal</span></p>
+        <div class="body">
+          <h3>A drone with its own eyes <em class="wip">in progress</em></h3>
+          <p>A partner and I are building a multi-camera drone from nothing: frame, motors, battery and power, electronics and a 4K camera rig. We don't split the work; we both do all of it. On the software side we detect and track small, fast objects in 4K aerial video, mixing heatmap networks with probabilistic tracking, and fine-tuned YOLO trackers that score above 95% F1 and IDF1 on public benchmarks. Everything has to survive H.265 compression, poor light and a narrow radio link.</p>
+          <p class="tools">PyTorch · YOLO · multi-object tracking · electronics</p>
+        </div>
+        <figure class="sketch"><div class="fig3d" data-fig3d="drone" role="img" aria-label="3D drawing of a quadcopter tracking moving objects on the ground"><canvas></canvas><span class="tag tl">4K camera rig</span><span class="tag br">detect + track</span></div><figcaption>Fig. 3 — From the air: every object gets a box and an ID</figcaption></figure>
+      </article>
+      <article class="entry" data-topics="vision biometrics">
+        <p class="margin">Feb – May 2026<span>MSc · Biometrics</span></p>
+        <div class="body">
+          <h3>Catching deepfakes</h3>
+          <p>A group project. We fine-tuned EfficientNet-B0 to tell real faces from generated ones, and trained it on images degraded with JPEG compression and blur so it would still work on pictures found in the wild. Hyperparameters were tuned with Optuna. On datasets it had never seen, the AUC went up by almost 40%.</p>
+          <p class="tools">EfficientNet · transfer learning · Optuna</p>
+        </div>
+        <figure class="sketch"><svg data-fig="deepfake" viewBox="0 0 320 210"></svg><figcaption>Fig. 4 — real or generated?</figcaption></figure>
+      </article>
+      <article class="entry" data-topics="security">
+        <p class="margin">Sep 2024 – Jun 2025<span>bachelor's thesis</span></p>
+        <div class="body">
+          <h3>Spotting cyberattacks in network traffic</h3>
+          <p>My bachelor's thesis compared deep learning models for intrusion detection on CIC-IDS2018: more than 16 million network flows in 13 classes, from DDoS to SQL injection. Most of the work was the data: feature selection, normalization, and rebalancing the rare attacks with SMOTE. A CNN that reads each flow as a small image reached 86% accuracy and 0.87 weighted F1. It beat the MLP but took ten times longer to train, so I proposed using both: a light filter first, deep analysis after.</p>
+          <p class="tools">TensorFlow · Keras · focal loss · SMOTE</p>
+        </div>
+        <figure class="sketch"><svg data-fig="flows" viewBox="0 0 320 210"></svg><figcaption>Fig. 5 — one network flow, read as an image</figcaption></figure>
+      </article>
+      <article class="entry" data-topics="markets">
+        <p class="margin">Jul 2026 – now<span>MSc thesis · Eldarion</span></p>
+        <div class="body">
+          <h3>Teaching an agent to trade intraday <em class="wip">in progress</em></h3>
+          <p>My MSc thesis, done with Eldarion Solutions: an agent that trades the S&amp;P 500 ETF every five minutes. It is trained with PPO and only judged after transaction costs, with walk-forward validation over several seeds. Most of my time goes into ablations, seeing what changes when the reward, the features or the training setup change. Next step: several assets at once.</p>
+          <p class="tools">reinforcement learning · PPO · backtesting · Sharpe ratio</p>
+        </div>
+        <figure class="sketch"><svg data-fig="rl" viewBox="0 0 320 210"></svg><figcaption>Fig. 6 — the loop, every five minutes</figcaption></figure>
+      </article>
+      <article class="entry" data-topics="markets">
+        <p class="margin">Nov 2025 – Jan 2026<span>MSc Telecom</span></p>
+        <div class="body">
+          <h3>Can market mood predict prices?</h3>
+          <p>I gathered Fed statements, news, tweets, StockTwits and Reddit posts, turned them into sentiment with FinBERT and RoBERTa models, and combined them with price and macro data in XGBoost, LSTM and SVM models, validated walk-forward and explained with SHAP. The honest answer: for the S&amp;P 500 as a whole, barely better than a coin. For single stocks like Apple or Tesla, a test AUC between 0.62 and 0.72.</p>
+          <p class="tools">FinBERT · RoBERTa · XGBoost · SHAP · Optuna</p>
+        </div>
+        <figure class="sketch"><svg data-fig="coin" viewBox="0 0 320 210"></svg><figcaption>Fig. 7 — index vs. single stocks (test AUC)</figcaption></figure>
+      </article>
+
+      <h3 class="more-head" id="more">More projects</h3>
+      <div class="cards">
+        <article class="card" data-topics="hardware">
+          <p class="card-meta">MSc · 2026</p>
+          <h4>High-resolution stopwatch on an FPGA</h4>
+          <p>A stopwatch in VHDL with button debouncing and RGB LED control, built from combinational and sequential blocks (state machine, 1 Hz generator) and verified with testbenches.</p>
+          <p class="tools">VHDL · Vivado · testbenches</p>
+        </article>
+        <article class="card" data-topics="hardware">
+          <p class="card-meta">MSc · 2025–26</p>
+          <h4>Temperature and light sensing</h4>
+          <p>A Pt1000 in a Wheatstone bridge, amplified with an INA122 instrumentation amplifier and calibrated for 15–45 °C, plus a light sensor, both read on an Arduino and analysed in MATLAB.</p>
+          <p class="tools">Arduino · analog electronics · MATLAB</p>
+        </article>
+        <article class="card" data-topics="hardware">
+          <p class="card-meta">BSc</p>
+          <h4>Pulse oximeter</h4>
+          <p>Built and tested a pulse oximeter in the electronics lab.</p>
+          <p class="tools">electronics</p>
+        </article>
+        <article class="card" data-topics="hardware">
+          <p class="card-meta">BSc</p>
+          <h4>A game on a microcontroller</h4>
+          <p>A small game programmed in C, running directly on a microcontroller.</p>
+          <p class="tools">C · embedded</p>
+        </article>
+        <article class="card" data-topics="vision">
+          <p class="card-meta">MSc · 2025–26</p>
+          <h4>Object detector from scratch</h4>
+          <p>A single-stage object detector written in PyTorch: anchor generation on the feature grid, matching to ground-truth boxes, box regression and non-maximum suppression.</p>
+          <p class="tools">PyTorch</p>
+        </article>
+        <article class="card" data-topics="vision">
+          <p class="card-meta">MSc · 2025–26</p>
+          <h4>Video classification</h4>
+          <p>Classifying videos with CNNs, comparing random and fixed frame sampling as baselines before training the full model.</p>
+          <p class="tools">Python · CNNs</p>
+        </article>
+        <article class="card" data-topics="vision">
+          <p class="card-meta">BSc · 2024–25</p>
+          <h4>Scene recognition with bag of words</h4>
+          <p>Recognising the type of scene in an image: local descriptors grouped into a visual vocabulary, then classified with KNN and SVM.</p>
+          <p class="tools">Python · KNN · SVM</p>
+        </article>
+        <article class="card" data-topics="biometrics">
+          <p class="card-meta">MSc · 2025–26</p>
+          <h4>Online signature verification</h4>
+          <p>Verifying handwritten signatures from x, y and pressure signals over time: feature extraction, matching against the enrolled signatures and evaluation with DET curves and EER.</p>
+          <p class="tools">Python · biometrics</p>
+        </article>
+        <article class="card" data-topics="biometrics">
+          <p class="card-meta">BSc · 2024–25</p>
+          <h4>Who wrote this digit?</h4>
+          <p>Recognising users from digits handwritten on a touchscreen. I compared Dynamic Time Warping templates with neural networks, using cross-validation and DET curves.</p>
+          <p class="tools">Python · DTW · neural networks</p>
+        </article>
+        <article class="card" data-topics="security">
+          <p class="card-meta">BSc · 2024–25</p>
+          <h4>SecureBox</h4>
+          <p>A desktop app to keep sensitive data in encrypted containers: user accounts with hashed passwords, symmetric encryption and backup to Google Drive, with a Tkinter interface. Built with a classmate.</p>
+          <p class="tools">Python · cryptography · Tkinter</p>
+        </article>
+        <article class="card" data-topics="security">
+          <p class="card-meta">BSc · May 2025</p>
+          <h4>Pentesting a vulnerable web app</h4>
+          <p>With a classmate, we audited a deliberately vulnerable web app and documented each finding: stored XSS, IDOR, broken access control and authentication, mass assignment, open redirects, CSRF and data exposure.</p>
+          <p class="tools">OWASP Top 10 · OWASP ZAP</p>
+        </article>
+        <article class="card" data-topics="security networks">
+          <p class="card-meta">MSc · 2025–26</p>
+          <h4>Which app is this traffic?</h4>
+          <p>Classifying the traffic in real packet captures, comparing port-based classification with deep packet inspection over flows. Group project.</p>
+          <p class="tools">pcap · DPI · Python</p>
+        </article>
+        <article class="card" data-topics="networks">
+          <p class="card-meta">MSc · 2025–26</p>
+          <h4>Path inflation on the Internet</h4>
+          <p>From traceroute measurements, mapped every hop to its autonomous system and compared real paths with direct distances, to find which networks are badly connected because of routing agreements.</p>
+          <p class="tools">MATLAB · traceroute · BGP</p>
+        </article>
+        <article class="card" data-topics="networks">
+          <p class="card-meta">MSc · 2025–26</p>
+          <h4>Satellite link budgets</h4>
+          <p>Uplink and downlink budgets with a transponder model and rain attenuation: received power and Eb/N0 against the ground station's EIRP, then mobile access networks.</p>
+          <p class="tools">MATLAB · RF</p>
+        </article>
+        <article class="card" data-topics="networks">
+          <p class="card-meta">MSc · 2026</p>
+          <h4>Lossless audio compression</h4>
+          <p>Linear-prediction (LPC) audio coding in the spirit of FLAC: predict each sample, then code only the error.</p>
+          <p class="tools">MATLAB · information theory</p>
+        </article>
+        <article class="card" data-topics="networks">
+          <p class="card-meta">MSc · 2025–26</p>
+          <h4>VoIP call records API</h4>
+          <p>A REST API in Flask that stores and serves VoIP call records, with OAuth2 sign-in.</p>
+          <p class="tools">Python · Flask · OAuth2 · GraphQL</p>
+        </article>
+        <article class="card" data-topics="networks">
+          <p class="card-meta">BSc</p>
+          <h4>Radar simulator</h4>
+          <p>A radar simulator built in MATLAB.</p>
+          <p class="tools">MATLAB · radar</p>
+        </article>
+        <article class="card" data-topics="networks">
+          <p class="card-meta">BSc</p>
+          <h4>Microstrip antenna</h4>
+          <p>Design and simulation of a microstrip patch antenna.</p>
+          <p class="tools">CST Studio · ADS</p>
+        </article>
+        <article class="card" data-topics="networks">
+          <p class="card-meta">BSc · 2023–24</p>
+          <h4>Source and channel coding</h4>
+          <p>Huffman coding, linear block codes, convolutional codes and PCM / G.711, all implemented in MATLAB.</p>
+          <p class="tools">MATLAB</p>
+        </article>
+      </div>
+    </section>
+
+    <!-- ============ 4 · Work log ============ -->
+    <section class="chapter" id="log">
+      <h2><span class="num">2</span>Work log</h2>
+      <table class="log">
+        <thead><tr><th>When</th><th>Where</th><th>What I did</th></tr></thead>
+        <tbody>
+          <tr>
+            <td>Apr 2026 – now</td>
+            <td><b>Eldarion Solutions</b><br>AI / ML intern, Madrid</td>
+            <td>Reinforcement learning agent for intraday trading on SPY, with realistic execution and costs. Helped design the AWS setup that trains and runs the agents.</td>
+          </tr>
+          <tr>
+            <td>Jun – Aug 2025</td>
+            <td><b>Eye Performance</b><br>AI / data intern</td>
+            <td>Cleaned financial time series for price-prediction models: moving averages, Kalman and Hodrick-Prescott filters, wavelets.</td>
+          </tr>
+          <tr>
+            <td>Nov 2024 – Feb 2025</td>
+            <td><b>LABE Abogados</b><br>AI intern</td>
+            <td>LLM chatbots (OpenAI, DeepSeek) for client websites, and a pipeline for a fully AI-generated video podcast.</td>
+          </tr>
+          <tr>
+            <td>Sep 2023 – Sep 2025</td>
+            <td><b>Superprof</b><br>private tutor</td>
+            <td>One-to-one tutoring.</td>
+          </tr>
+        </tbody>
+      </table>
+    </section>
+
+    <!-- ============ 5 · About & contact ============ -->
+    <section class="chapter" id="me">
+      <h2><span class="num">3</span>About &amp; contact</h2>
+      <div class="about">
+        <div>
+          <p class="lead">I grew up between Madrid, Paris, Switzerland and Panama, so I switch between Spanish, French and English without thinking. Away from the desk: tennis, and I've finished a marathon.</p>
+          <h3 class="label">Studies</h3>
+          <ul class="plain">
+            <li><b>MSc Telecommunication Engineering</b> + <b>MSc Deep Learning for Audio &amp; Visual AI</b>, double degree<span>Universidad Autónoma de Madrid, 2025 – 2027</span></li>
+            <li><b>BSc Telecommunication Technologies Engineering</b><span>Universidad Autónoma de Madrid, 2021 – 2025</span></li>
+            <li><b>Baccalauréat Scientifique</b><span>Lycée Français de Madrid, 2018 – 2021</span></li>
+          </ul>
+        </div>
+        <div>
+          <h3 class="label">Tools I reach for</h3>
+          <dl class="kit">
+            <dt>Hardware</dt><dd>VHDL, Vivado, Vitis AI, Zynq, embedded C, Simulink</dd>
+            <dt>AI</dt><dd>PyTorch, TensorFlow, YOLO, transformers, XGBoost</dd>
+            <dt>Markets</dt><dd>reinforcement learning, backtesting, time series, Kalman filters</dd>
+            <dt>Security</dt><dd>intrusion detection, cryptography, pentesting, Wireshark</dd>
+            <dt>RF</dt><dd>antennas, link budgets, radar, CST, ADS</dd>
+            <dt>Code</dt><dd>Python, C, C++, MATLAB, Git, AWS</dd>
+          </dl>
+        </div>
+      </div>
+
+      <div class="contact">
+        <p class="hand big">Want to build something together?</p>
+        <a href="https://www.linkedin.com/in/pablo-b-a9a9b2138/" target="_blank" rel="noopener">Write to me on LinkedIn ↗</a>
+      </div>
+    </section>
+
+    <footer class="foot">Pablo Ballester Asesio · 2026 · drawn with three.js and rough.js</footer>
+  </div>
+</body>
+</html>
