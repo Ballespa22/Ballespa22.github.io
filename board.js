@@ -195,7 +195,8 @@ function frame() {
   camera.position.set(Math.sin(az) * Math.cos(el) * 40, Math.sin(el) * 40, Math.cos(az) * Math.cos(el) * 40);
   camera.lookAt(0, e * 1.6, 0);
   const aspect = W / H;
-  const half = Math.max(4.4, 5.6 / aspect) + e * 1.3;
+  // en pantallas verticales (móvil) hace falta más margen para que la placa no se corte por los lados
+  const half = Math.max(4.4, (aspect < 1 ? 7.6 : 5.6) / aspect) + e * 1.3;
   camera.left = -half * aspect;
   camera.right = half * aspect;
   camera.top = half;
