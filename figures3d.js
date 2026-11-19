@@ -1,4 +1,4 @@
-// Figuras 3 y 4 en 3D, con el mismo estilo de plano que la placa de la portada:
+// Figuras 1, 3 y 4 en 3D, con el mismo estilo de plano que la placa de la portada:
 // caras del color del papel y aristas de tinta. Solo se animan cuando se ven en pantalla.
 
 import * as THREE from "three";
@@ -198,8 +198,116 @@ function drone(scene) {
   };
 }
 
+// ---------- Fig. 1: TFM, fuga por canal lateral en un emisor BB84 ----------
+// Una placa con la FPGA (Alice) y un láser que envía fotones por la fibra, cada uno con
+// su polarización (uno de los 4 estados BB84). Cada vez que la FPGA codifica un bit, del
+// chip sale un "anillo" electromagnético más fuerte si el bit es 1: eso es la fuga.
+// La sonda lo capta y la pantalla del fondo dibuja la traza, con picos que siguen a los bits.
+// Esquema conceptual: el TFM está en curso y no hay medidas reales aquí.
+function qkd(scene) {
+  const P = 0.9; // segundos entre fotones
+  const ANG = [0, Math.PI / 2, Math.PI / 4, (3 * Math.PI) / 4]; // │ ─ ╱ ╲ (bases + y ×)
+  const stateOf = (k) => ((k * 7 + 3) % 4 + 4) % 4; // secuencia fija de estados
+  const bitOf = (k) => stateOf(k) % 2;
+
+  // placa, FPGA con patillas y chip RNG
+  solid(scene, box(9.2, 0.14, 4.6), 0, -0.32, 0);
+  solid(scene, box(2.2, 0.34, 2.2), -2, -0.08, 0.3);
+  solid(scene, box(1.2, 0.06, 1.2), -2, 0.12, 0.3, { mat: new THREE.MeshBasicMaterial({ color: "#efc4b8" }) });
+  for (let i = 0; i < 7; i++) {
+    const d = -0.9 + i * 0.3;
+    solid(scene, box(0.08, 0.06, 0.3), -2 + d, -0.22, 0.3 + 1.25);
+    solid(scene, box(0.08, 0.06, 0.3), -2 + d, -0.22, 0.3 - 1.25);
+    solid(scene, box(0.3, 0.06, 0.08), -2 + 1.25, -0.22, 0.3 + d);
+    solid(scene, box(0.3, 0.06, 0.08), -2 - 1.25, -0.22, 0.3 + d);
+  }
+  solid(scene, box(0.8, 0.22, 0.8), -4.0, -0.14, 1.3);
+  lines(scene, [-3.6, -0.24, 1.3, -3.4, -0.24, 1.3, -3.6, -0.24, 1.1, -3.4, -0.24, 1.1]);
+
+  // láser y fibra
+  solid(scene, box(1.1, 0.5, 0.7), 0.4, 0, 0.3);
+  solid(scene, new THREE.CylinderGeometry(0.16, 0.16, 0.3, 14), 1.1, 0, 0.3, { rot: [0, 0, Math.PI / 2] });
+  lines(scene, [-0.85, -0.24, 0.3, -0.15, -0.24, 0.3], faintMat);
+  lines(scene, [1.25, 0, 0.3, 4.5, 0, 0.3], new THREE.LineBasicMaterial({ color: INK, transparent: true, opacity: 0.45 }));
+
+  // fotones: bolita + barra de polarización, perpendicular a la fibra
+  const photons = [0, 1, 2].map(() => {
+    const g = new THREE.Group();
+    g.add(new THREE.Mesh(new THREE.SphereGeometry(0.13, 14, 10), new THREE.MeshBasicMaterial({ color: ACCENT })));
+    const bar = solid(g, box(0.04, 0.62, 0.04), 0, 0, 0, { mat: new THREE.MeshBasicMaterial({ color: ACCENT }) });
+    scene.add(g);
+    return { g, bar };
+  });
+
+  // sonda EM sobre el chip
+  solid(scene, new THREE.CylinderGeometry(0.11, 0.11, 1.5, 12), -2.3, 1.75, 0.6, { rot: [0, 0, 0.35] });
+  solid(scene, new THREE.ConeGeometry(0.11, 0.3, 12), -2.04, 0.88, 0.6, { rot: [0, 0, Math.PI + 0.35] });
+
+  // anillos de fuga que salen del chip
+  const ringGeo = new THREE.BufferGeometry().setFromPoints(
+    Array.from({ length: 48 }, (_, i) => new THREE.Vector3(Math.cos((i / 48) * Math.PI * 2), 0, Math.sin((i / 48) * Math.PI * 2))),
+  );
+  const rings = [0, 1].map(() => {
+    const r = new THREE.LineLoop(ringGeo, new THREE.LineBasicMaterial({ color: ACCENT, transparent: true, opacity: 0 }));
+    r.position.set(-2, 0.18, 0.3);
+    scene.add(r);
+    return r;
+  });
+
+  // pantalla del osciloscopio al fondo, con rejilla y traza
+  const SX = -0.5, SY = 1.45, SZ = -2.0, SW = 5.2, SH = 2.0;
+  solid(scene, box(SW, SH, 0.06), SX, SY, SZ);
+  solid(scene, box(0.12, 1.2, 0.12), SX, 0, SZ);
+  const grid = [];
+  for (let i = 1; i < 4; i++) grid.push(SX - SW / 2 + (SW * i) / 4, SY - SH / 2, SZ + 0.04, SX - SW / 2 + (SW * i) / 4, SY + SH / 2, SZ + 0.04);
+  for (let i = 1; i < 3; i++) grid.push(SX - SW / 2, SY - SH / 2 + (SH * i) / 3, SZ + 0.04, SX + SW / 2, SY - SH / 2 + (SH * i) / 3, SZ + 0.04);
+  lines(scene, grid, new THREE.LineBasicMaterial({ color: INK, transparent: true, opacity: 0.15 }));
+  const NPTS = 140, WIN = 3.2; // segundos que caben en la pantalla
+  const tracePos = new Float32Array(NPTS * 3);
+  const trace = new THREE.Line(
+    new THREE.BufferGeometry().setAttribute("position", new THREE.BufferAttribute(tracePos, 3)),
+    accentLine,
+  );
+  scene.add(trace);
+  const noise = (x) => Math.sin(x * 91.7) * 0.5 + Math.sin(x * 37.3) * 0.5;
+  const signal = (tau) => {
+    let v = noise(tau) * 0.03;
+    const k = Math.round(tau / P);
+    const d = tau - k * P;
+    v += (bitOf(k) ? 0.75 : 0.22) * Math.exp(-((d / 0.045) ** 2));
+    return v;
+  };
+
+  return {
+    half: 3.9,
+    update(t) {
+      const k0 = Math.floor(t / P);
+      photons.forEach(({ g, bar }, i) => {
+        const k = k0 - i, age = t - k * P;
+        const x = 1.3 + age * 2.2;
+        g.visible = x < 4.4;
+        g.position.set(x, 0, 0.3);
+        bar.rotation.x = ANG[stateOf(k)];
+      });
+      rings.forEach((r, i) => {
+        const k = k0 - i, age = t - k * P;
+        const s = 0.9 + age * 2.6;
+        r.scale.set(s, 1, s);
+        r.material.opacity = Math.max(0, 1 - age / 1.1) * (bitOf(k) ? 0.9 : 0.25);
+      });
+      for (let j = 0; j < NPTS; j++) {
+        const f = j / (NPTS - 1);
+        const tau = t - WIN + f * WIN;
+        tracePos.set([SX - SW / 2 + 0.15 + f * (SW - 0.3), SY - SH / 2 + 0.3 + signal(tau) * (SH - 0.6), SZ + 0.05], j * 3);
+      }
+      trace.geometry.attributes.position.needsUpdate = true;
+      return { az: 0.5 + Math.sin(t * 0.25) * 0.18, el: 0.48, look: [0.2, 0.75, 0] };
+    },
+  };
+}
+
 // ---------- Montaje común ----------
-const BUILDERS = { systolic, drone };
+const BUILDERS = { qkd, systolic, drone };
 const figs = [];
 
 document.querySelectorAll("[data-fig3d]").forEach((el) => {
