@@ -51,18 +51,18 @@ const FIGS = {
     boxed(10, 42, 62, 40, "RNG");
     text(svg, 41, 100, "bit + basis", { anchor: "middle", size: 10 });
     boxed(104, 36, 96, 52, "BB84 prep", { fill: "rgba(200,67,43,0.18)", fillStyle: "hachure", hachureGap: 6, fillWeight: 0.8 });
-    text(svg, 152, 104, "FPGA", { anchor: "middle", size: 10 });
+    text(svg, 152, 28, "FPGA", { anchor: "middle", size: 10 });
     boxed(228, 42, 80, 40, "modulator");
     arrow(72, 62, 102, 62);
     arrow(200, 62, 226, 62);
     [0, 1, 2].forEach((i) => add(rc.circle(250 + i * 18, 108, 7, o({ fill: INK, fillStyle: "solid", stroke: "none" }))));
     text(svg, 268, 128, "photons → Bob", { anchor: "middle", size: 10 });
-    add(rc.circle(152, 172, 30, o({ stroke: PENCIL })));
-    text(svg, 152, 176, "probe", { anchor: "middle", size: 10, color: PENCIL });
-    arrow(152, 90, 152, 154, { stroke: PENCIL, strokeLineDash: [5, 5] });
-    text(svg, 162, 134, "power / EM leak?", { size: 10, color: PENCIL });
-    text(svg, 12, 168, "countermeasures:", { size: 10 });
-    text(svg, 12, 184, "hide or mask it", { size: 10 });
+    add(rc.circle(152, 176, 46, o({ stroke: PENCIL })));
+    text(svg, 152, 180, "probe", { anchor: "middle", size: 10, color: PENCIL });
+    arrow(152, 90, 152, 150, { stroke: PENCIL, strokeLineDash: [5, 5] });
+    text(svg, 144, 124, "power / EM leak?", { anchor: "end", size: 10, color: PENCIL });
+    text(svg, 200, 170, "countermeasures:", { size: 10 });
+    text(svg, 200, 186, "hide or mask it", { size: 10 });
   },
 
   // Fig. 2: camino del audio
