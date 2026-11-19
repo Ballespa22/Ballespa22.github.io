@@ -47,22 +47,73 @@ function draw(svg, rc) {
 const FIGS = {
   // Fig. 1: TFM, preparación de estados BB84 en FPGA y fuga por canal lateral
   qkd(svg, rc) {
-    const { add, o, arrow, boxed } = draw(svg, rc);
-    boxed(10, 42, 62, 40, "RNG");
-    text(svg, 41, 100, "bit + basis", { anchor: "middle", size: 10 });
-    boxed(104, 36, 96, 52, "BB84 prep", { fill: "rgba(200,67,43,0.18)", fillStyle: "hachure", hachureGap: 6, fillWeight: 0.8 });
-    text(svg, 152, 28, "FPGA", { anchor: "middle", size: 10 });
-    boxed(228, 42, 80, 40, "modulator");
-    arrow(72, 62, 102, 62);
-    arrow(200, 62, 226, 62);
-    [0, 1, 2].forEach((i) => add(rc.circle(250 + i * 18, 108, 7, o({ fill: INK, fillStyle: "solid", stroke: "none" }))));
-    text(svg, 268, 128, "photons → Bob", { anchor: "middle", size: 10 });
-    add(rc.circle(152, 176, 46, o({ stroke: PENCIL })));
-    text(svg, 152, 180, "probe", { anchor: "middle", size: 10, color: PENCIL });
-    arrow(152, 90, 152, 150, { stroke: PENCIL, strokeLineDash: [5, 5] });
-    text(svg, 144, 124, "power / EM leak?", { anchor: "end", size: 10, color: PENCIL });
-    text(svg, 200, 170, "countermeasures:", { size: 10 });
-    text(svg, 200, 186, "hide or mask it", { size: 10 });
+    const { add, o, arrow, boxed, flow } = draw(svg, rc);
+    // estado de polarización: un trazo corto inclinado `deg` grados
+    const pol = (cx, cy, deg, len, color) => {
+      const a = (deg * Math.PI) / 180, dx = (Math.cos(a) * len) / 2, dy = (Math.sin(a) * len) / 2;
+      add(rc.line(cx - dx, cy + dy, cx + dx, cy - dy, o({ stroke: color, strokeWidth: 1.4 })));
+    };
+    // pantalla de osciloscopio con su rejilla
+    const scope = (x, y, w, h) => {
+      add(rc.rectangle(x, y, w, h, o()));
+      for (const f of [1 / 3, 2 / 3]) add(rc.line(x, y + h * f, x + w, y + h * f, o({ stroke: SOFT, strokeWidth: 0.5, strokeLineDash: [2, 3] })));
+      for (const f of [1 / 4, 2 / 4, 3 / 4]) add(rc.line(x + w * f, y, x + w * f, y + h, o({ stroke: SOFT, strokeWidth: 0.5, strokeLineDash: [2, 3] })));
+    };
+
+    // --- el chip FPGA (Alice) con sus patillas
+    text(svg, 14, 13, "FPGA · Alice", { size: 10, color: INK });
+    add(rc.rectangle(14, 24, 140, 86, o({ strokeWidth: 1.4 })));
+    for (let x = 26; x <= 142; x += 12) {
+      add(rc.line(x, 24, x, 19, o({ strokeWidth: 0.9 })));
+      add(rc.line(x, 110, x, 115, o({ strokeWidth: 0.9 })));
+    }
+    boxed(24, 46, 42, 28, "RNG");
+    text(svg, 45, 92, "bit·basis", { anchor: "middle", size: 8 });
+    boxed(82, 42, 62, 36, "BB84", { fill: "rgba(200,67,43,0.18)", fillStyle: "hachure", hachureGap: 5, fillWeight: 0.8 });
+    arrow(66, 60, 80, 60);
+    // los cuatro estados BB84: base + (│ ─) y base × (╱ ╲)
+    [90, 0, 45, 135].forEach((deg, i) => {
+      const cx = 92 + i * 15;
+      add(rc.circle(cx, 93, 12, o({ stroke: SOFT, strokeWidth: 0.7 })));
+      pol(cx, 93, deg, 9, INK);
+    });
+
+    // --- láser y fibra: fotones polarizados hacia Bob
+    arrow(154, 60, 170, 60);
+    boxed(172, 46, 44, 28, "laser");
+    add(rc.line(216, 60, 288, 60, o({ stroke: SOFT, strokeWidth: 2.2 })));
+    flow([[216, 60], [288, 60]]);
+    [[230, 90], [252, 45], [274, 0]].forEach(([cx, deg]) => {
+      add(rc.circle(cx, 60, 11, o({ stroke: PENCIL, fill: "#fff", fillStyle: "solid" })));
+      pol(cx, 60, deg, 14, PENCIL);
+    });
+    text(svg, 293, 64, "Bob", { size: 10, color: INK });
+    text(svg, 252, 86, "single photons", { anchor: "middle", size: 9 });
+
+    // --- la sonda: lo que el chip deja escapar al codificar
+    arrow(84, 116, 84, 134, { stroke: PENCIL, strokeLineDash: [4, 4] });
+    text(svg, 90, 128, "power / EM", { size: 9, color: PENCIL });
+    scope(14, 136, 140, 62);
+    // traza con picos que siguen a los bits 1 0 1 1
+    const bits = [1, 0, 1, 1], leak = [];
+    bits.forEach((b, i) => {
+      const x0 = 18 + i * 33;
+      leak.push([x0, 182], [x0 + 8, 182], [x0 + 12, b ? 152 : 172], [x0 + 16, b ? 188 : 178], [x0 + 20, 182]);
+      text(svg, x0 + 12, b ? 149 : 169, String(b), { anchor: "middle", size: 8, color: PENCIL });
+    });
+    leak.push([150, 182]);
+    add(rc.linearPath(leak, o({ stroke: PENCIL, strokeWidth: 1.2 })));
+
+    // --- objetivo de las contramedidas: una traza sin patrón
+    arrow(157, 167, 174, 167, { stroke: PENCIL });
+    text(svg, 241, 130, "goal: no pattern", { anchor: "middle", size: 9 });
+    scope(176, 136, 130, 62);
+    let s = 7;
+    const rnd = () => ((s = (s * 16807) % 2147483647) - 1) / 2147483646;
+    const flat = [];
+    for (let x = 180; x <= 302; x += 4) flat.push([x, 167 + (rnd() - 0.5) * 7]);
+    add(rc.linearPath(flat, o({ strokeWidth: 1.1 })));
+    text(svg, 241, 193, "masking · hiding", { anchor: "middle", size: 8 });
   },
 
   // Fig. 2: camino del audio
