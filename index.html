@@ -72,6 +72,15 @@
         <button type="button" data-filter="markets" aria-pressed="false">Markets<sup></sup></button>
       </div>
 
+      <article class="entry" data-topics="hardware security">
+        <p class="margin">Nov 2026 – now<span>MSc Telecom thesis</span></p>
+        <div class="body">
+          <h3>Side channels in a quantum key distribution controller <em class="wip">in progress</em></h3>
+          <p>My MSc Telecom thesis. On an FPGA I am implementing a controller that reproduces the state-preparation logic of BB84, the protocol behind quantum key distribution (QKD). Next I will measure what the chip gives away through its power draw and electromagnetic emissions, and design and compare countermeasures to reduce that leakage. A quantum simulation part will study how much those leaks could weaken the security of the protocol.</p>
+          <p class="tools">FPGA · BB84 · side-channel analysis · countermeasures · quantum simulation</p>
+        </div>
+        <figure class="sketch"><svg data-fig="qkd" viewBox="0 0 320 210"></svg><figcaption>Fig. 1 — Bits and bases go out as photons; the chip should not leak them on the side</figcaption></figure>
+      </article>
       <article class="entry" data-topics="hardware">
         <p class="margin">Oct 2026<span>MSc Telecom</span></p>
         <div class="body">
@@ -79,7 +88,7 @@
           <p>For the MSc I built a recorder and player that runs in real time on a Zybo Z7-20. The audio path lives in programmable logic, written in VHDL with Vivado and Simulink. The ARM core on the same chip configures the audio codec in C. Buttons and switches on the board set the volume and switch between recording and playback.</p>
           <p class="tools">VHDL · Vivado · Vitis · Simulink · C</p>
         </div>
-        <figure class="sketch"><svg data-fig="audio" viewBox="0 0 320 210"></svg><figcaption>Fig. 1 — Audio path: mic → codec → logic → memory → out</figcaption></figure>
+        <figure class="sketch"><svg data-fig="audio" viewBox="0 0 320 210"></svg><figcaption>Fig. 2 — Audio path: mic → codec → logic → memory → out</figcaption></figure>
       </article>
       <article class="entry" data-topics="hardware vision">
         <p class="margin">Feb – May 2026<span>MSc Deep Learning</span></p>
@@ -88,7 +97,7 @@
           <p>On an Ultra96 board I took networks from a training script all the way to the FPGA's DPU with Vitis AI. First an MNIST classifier trained in TensorFlow 2, quantized to 8-bit integers and compiled. Then a ResNet-50 for ImageNet, from both TensorFlow and PyTorch. The course behind it covered why this works: accelerator architectures, systolic arrays, pruning, quantization and memory bottlenecks.</p>
           <p class="tools">Vitis AI · DPU · TensorFlow · PyTorch · Zynq UltraScale+</p>
         </div>
-        <figure class="sketch"><div class="fig3d" data-fig3d="systolic" role="img" aria-label="3D drawing of a systolic array with data flowing through it"><canvas></canvas><span class="tag tl">activations →</span><span class="tag br">↓ partial sums</span></div><figcaption>Fig. 2 — Systolic array: the weights stay put, the data flows through</figcaption></figure>
+        <figure class="sketch"><div class="fig3d" data-fig3d="systolic" role="img" aria-label="3D drawing of a systolic array with data flowing through it"><canvas></canvas><span class="tag tl">activations →</span><span class="tag br">↓ partial sums</span></div><figcaption>Fig. 3 — Systolic array: the weights stay put, the data flows through</figcaption></figure>
       </article>
       <article class="entry" data-topics="hardware vision">
         <p class="margin">Sep 2026 – now<span>personal</span></p>
@@ -97,7 +106,7 @@
           <p>A partner and I are building a multi-camera drone from nothing: frame, motors, battery and power, electronics and a 4K camera rig. We don't split the work; we both do all of it. On the software side we detect and track small, fast objects in 4K aerial video, mixing heatmap networks with probabilistic tracking, and fine-tuned YOLO trackers that score above 95% F1 and IDF1 on public benchmarks. Everything has to survive H.265 compression, poor light and a narrow radio link.</p>
           <p class="tools">PyTorch · YOLO · multi-object tracking · electronics</p>
         </div>
-        <figure class="sketch"><div class="fig3d" data-fig3d="drone" role="img" aria-label="3D drawing of a quadcopter tracking moving objects on the ground"><canvas></canvas><span class="tag tl">4K camera rig</span><span class="tag br">detect + track</span></div><figcaption>Fig. 3 — From the air: every object gets a box and an ID</figcaption></figure>
+        <figure class="sketch"><div class="fig3d" data-fig3d="drone" role="img" aria-label="3D drawing of a quadcopter tracking moving objects on the ground"><canvas></canvas><span class="tag tl">4K camera rig</span><span class="tag br">detect + track</span></div><figcaption>Fig. 4 — From the air: every object gets a box and an ID</figcaption></figure>
       </article>
       <article class="entry" data-topics="vision biometrics">
         <p class="margin">Feb – May 2026<span>MSc · Biometrics</span></p>
@@ -106,7 +115,7 @@
           <p>A group project. We fine-tuned EfficientNet-B0 to tell real faces from generated ones, and trained it on images degraded with JPEG compression and blur so it would still work on pictures found in the wild. Hyperparameters were tuned with Optuna. On datasets it had never seen, the AUC went up by almost 40%.</p>
           <p class="tools">EfficientNet · transfer learning · Optuna</p>
         </div>
-        <figure class="sketch"><svg data-fig="deepfake" viewBox="0 0 320 210"></svg><figcaption>Fig. 4 — real or generated?</figcaption></figure>
+        <figure class="sketch"><svg data-fig="deepfake" viewBox="0 0 320 210"></svg><figcaption>Fig. 5 — real or generated?</figcaption></figure>
       </article>
       <article class="entry" data-topics="security">
         <p class="margin">Sep 2024 – Jun 2025<span>bachelor's thesis</span></p>
@@ -115,7 +124,7 @@
           <p>My bachelor's thesis compared deep learning models for intrusion detection on CIC-IDS2018: more than 16 million network flows in 13 classes, from DDoS to SQL injection. Most of the work was the data: feature selection, normalization, and rebalancing the rare attacks with SMOTE. A CNN that reads each flow as a small image reached 86% accuracy and 0.87 weighted F1. It beat the MLP but took ten times longer to train, so I proposed using both: a light filter first, deep analysis after.</p>
           <p class="tools">TensorFlow · Keras · focal loss · SMOTE</p>
         </div>
-        <figure class="sketch"><svg data-fig="flows" viewBox="0 0 320 210"></svg><figcaption>Fig. 5 — one network flow, read as an image</figcaption></figure>
+        <figure class="sketch"><svg data-fig="flows" viewBox="0 0 320 210"></svg><figcaption>Fig. 6 — one network flow, read as an image</figcaption></figure>
       </article>
       <article class="entry" data-topics="markets">
         <p class="margin">Jul 2026 – now<span>MSc thesis · Eldarion</span></p>
@@ -124,7 +133,7 @@
           <p>My MSc thesis, done with Eldarion Solutions: an agent that trades the S&amp;P 500 ETF every five minutes. It is trained with PPO and only judged after transaction costs, with walk-forward validation over several seeds. Most of my time goes into ablations, seeing what changes when the reward, the features or the training setup change. Next step: several assets at once.</p>
           <p class="tools">reinforcement learning · PPO · backtesting · Sharpe ratio</p>
         </div>
-        <figure class="sketch"><svg data-fig="rl" viewBox="0 0 320 210"></svg><figcaption>Fig. 6 — the loop, every five minutes</figcaption></figure>
+        <figure class="sketch"><svg data-fig="rl" viewBox="0 0 320 210"></svg><figcaption>Fig. 7 — the loop, every five minutes</figcaption></figure>
       </article>
       <article class="entry" data-topics="markets">
         <p class="margin">Nov 2025 – Jan 2026<span>MSc Telecom</span></p>
@@ -133,7 +142,7 @@
           <p>I gathered Fed statements, news, tweets, StockTwits and Reddit posts, turned them into sentiment with FinBERT and RoBERTa models, and combined them with price and macro data in XGBoost, LSTM and SVM models, validated walk-forward and explained with SHAP. The honest answer: for the S&amp;P 500 as a whole, barely better than a coin. For single stocks like Apple or Tesla, a test AUC between 0.62 and 0.72.</p>
           <p class="tools">FinBERT · RoBERTa · XGBoost · SHAP · Optuna</p>
         </div>
-        <figure class="sketch"><svg data-fig="coin" viewBox="0 0 320 210"></svg><figcaption>Fig. 7 — index vs. single stocks (test AUC)</figcaption></figure>
+        <figure class="sketch"><svg data-fig="coin" viewBox="0 0 320 210"></svg><figcaption>Fig. 8 — index vs. single stocks (test AUC)</figcaption></figure>
       </article>
 
       <h3 class="more-head" id="more">More projects</h3>

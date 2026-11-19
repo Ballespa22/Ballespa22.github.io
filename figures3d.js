@@ -1,4 +1,4 @@
-// Figuras 2 y 3 en 3D, con el mismo estilo de plano que la placa de la portada:
+// Figuras 3 y 4 en 3D, con el mismo estilo de plano que la placa de la portada:
 // caras del color del papel y aristas de tinta. Solo se animan cuando se ven en pantalla.
 
 import * as THREE from "three";

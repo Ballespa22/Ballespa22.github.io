@@ -1,6 +1,6 @@
 // Dibujos técnicos de cada proyecto, hechos con rough.js (en modo preciso) dentro de cada <svg data-fig>.
 // Al entrar en pantalla se trazan solos y después circulan puntos por las flechas.
-// Las figuras 2 y 3 son 3D y están en figures3d.js.
+// Las figuras 3 y 4 son 3D y están en figures3d.js.
 // Son esquemas conceptuales; los únicos números son los resultados reales de los proyectos.
 
 import rough from "roughjs";
@@ -45,7 +45,27 @@ function draw(svg, rc) {
 }
 
 const FIGS = {
-  // Fig. 1: camino del audio
+  // Fig. 1: TFM, preparación de estados BB84 en FPGA y fuga por canal lateral
+  qkd(svg, rc) {
+    const { add, o, arrow, boxed } = draw(svg, rc);
+    boxed(10, 42, 62, 40, "RNG");
+    text(svg, 41, 100, "bit + basis", { anchor: "middle", size: 10 });
+    boxed(104, 36, 96, 52, "BB84 prep", { fill: "rgba(200,67,43,0.18)", fillStyle: "hachure", hachureGap: 6, fillWeight: 0.8 });
+    text(svg, 152, 104, "FPGA", { anchor: "middle", size: 10 });
+    boxed(228, 42, 80, 40, "modulator");
+    arrow(72, 62, 102, 62);
+    arrow(200, 62, 226, 62);
+    [0, 1, 2].forEach((i) => add(rc.circle(250 + i * 18, 108, 7, o({ fill: INK, fillStyle: "solid", stroke: "none" }))));
+    text(svg, 268, 128, "photons → Bob", { anchor: "middle", size: 10 });
+    add(rc.circle(152, 172, 30, o({ stroke: PENCIL })));
+    text(svg, 152, 176, "probe", { anchor: "middle", size: 10, color: PENCIL });
+    arrow(152, 90, 152, 154, { stroke: PENCIL, strokeLineDash: [5, 5] });
+    text(svg, 162, 134, "power / EM leak?", { size: 10, color: PENCIL });
+    text(svg, 12, 168, "countermeasures:", { size: 10 });
+    text(svg, 12, 184, "hide or mask it", { size: 10 });
+  },
+
+  // Fig. 2: camino del audio
   audio(svg, rc) {
     const { add, o, arrow, boxed } = draw(svg, rc);
     add(rc.circle(28, 62, 26, o()));
@@ -66,7 +86,7 @@ const FIGS = {
     text(svg, 222, 116, "rec / play", { size: 10, color: PENCIL });
   },
 
-  // Fig. 4: caras reales y generadas pasando por la red
+  // Fig. 5: caras reales y generadas pasando por la red
   deepfake(svg, rc) {
     const { add, o, arrow, boxed } = draw(svg, rc);
     // cada imagen: un marco con el contorno de la cara y sus puntos de referencia
@@ -88,7 +108,7 @@ const FIGS = {
     text(svg, 166, 160, "+ JPEG, blur", { anchor: "middle", size: 10, color: PENCIL });
   },
 
-  // Fig. 5: un flujo de red convertido en imagen para la CNN
+  // Fig. 6: un flujo de red convertido en imagen para la CNN
   flows(svg, rc) {
     const { add, o, arrow, boxed } = draw(svg, rc);
     text(svg, 16, 30, "[0.2, 0.9, 0.1, 0.4, 0.7 …]", { color: INK, size: 11 });
@@ -106,7 +126,7 @@ const FIGS = {
     text(svg, 266, 132, "benign?", { size: 10 });
   },
 
-  // Fig. 6: el bucle agente-mercado
+  // Fig. 7: el bucle agente-mercado
   rl(svg, rc) {
     const { add, o, arrow, boxed, flow } = draw(svg, rc);
     boxed(18, 74, 96, 54, "agent · PPO");
@@ -126,7 +146,7 @@ const FIGS = {
     text(svg, 300, 160, "every 5 min", { anchor: "end", size: 10 });
   },
 
-  // Fig. 7: resultados reales (AUC de test)
+  // Fig. 8: resultados reales (AUC de test)
   coin(svg, rc) {
     const { add, o } = draw(svg, rc);
     const Y = (auc) => 180 - (auc - 0.4) * 400; // 0.4 → 180, 0.8 → 20
